@@ -11,6 +11,7 @@ const innerHeight = window.innerHeight;
 const centerY = window.innerHeight / 2; //TODO: подумати над цим
 const centerX = window.innerWidth / 2;
 const fruitSize = [200, 200];
+let score = 0;
 
 const config = {
   type: Phaser.AUTO,
@@ -32,9 +33,17 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-function startFruitGenerator() {
-  const getRandomFruit = () => data[Phaser.Math.Between(0, 3)];
-  const getRandomX = () => Phaser.Math.Between(0, innerWidth);
+function createFruitGenerator(scoreText) {
+  const addToScore = ({ points }) => {
+    score = score + points;
+    scoreText.setText("Score: " + score);
+  };
+  const setEventListeners = fruit => {
+    fruit.on("pointerup", () => {
+      addToScore(fruit.data.values);
+      fruit.destroy();
+    });
+  };
   const setVelocity = (startPointX, fruit) => {
     const velocityY = Phaser.Math.Between(-700, -1200);
     const velocityX =
@@ -44,11 +53,8 @@ function startFruitGenerator() {
     fruit.setVelocityY(velocityY);
     fruit.setVelocityX(velocityX);
   };
-  const setEventListeners = fruit => {
-    fruit.on("pointerdown", () => {
-      fruit.destroy();
-    });
-  };
+  const getRandomFruit = () => data[Phaser.Math.Between(0, 3)];
+  const getRandomX = () => Phaser.Math.Between(0, innerWidth);
   const createFruit = () => {
     const x = getRandomX();
     const y = innerHeight;
@@ -57,7 +63,9 @@ function startFruitGenerator() {
     fruit
       .setSize(...fruitSize)
       .setDisplaySize(...fruitSize)
-      .setData({ points });
+      .setData({ points })
+      .setInteractive();
+    setEventListeners(fruit);
     setVelocity(x, fruit);
   };
   setInterval(createFruit, 800);
@@ -73,7 +81,11 @@ function preload() {
 
 function create() {
   this.add.tileSprite(centerX, centerY, game.width, game.height, "background");
-  startFruitGenerator.call(this);
+  scoreText = this.add.text(16, 16, "score: 0", {
+    fontSize: "32px",
+    fill: "#fff"
+  });
+  createFruitGenerator.call(this, scoreText);
 }
 
 function update() {}
