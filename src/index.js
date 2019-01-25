@@ -4,6 +4,7 @@ const innerWidth = window.innerWidth;
 const innerHeight =  window.innerHeight;
 const centerY = window.innerHeight / 2; //TODO: подумати над цим
 const centerX =  window.innerWidth / 2;
+const fruitSize = [200, 200]
 
 const config = {
     type: Phaser.AUTO,
@@ -26,15 +27,28 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-function createFruits(){
-    const getRandomFruit = () => ["pineapple", "watermelon", "banana"][Phaser.Math.Between(0, 2)]
-    const getRandomX = () => Phaser.Math.Between(0, innerWidth)
-    const fruit = this.physics.add.sprite(getRandomX(), innerHeight, getRandomFruit())
-    fruit.setSize(200, 200)
-    fruit.setDisplaySize (200, 200)
-    fruit.setVelocityY(-930);
-    fruit.setVelocityX(130);
-
+function startFruitGenerator(){
+    const getRandomFruit = () => ["pineapple", "watermelon", "banana", "apple"][Phaser.Math.Between(0, 3)]
+    const getRandomX = () => Phaser.Math.Between(0, innerWidth);
+    const setVelocity = (startPointX, fruit) => {
+        const velocityY = Phaser.Math.Between(-700, -1200);
+        const velocityX = startPointX > innerWidth / 2 ? Phaser.Math.Between(-90, -170) :  Phaser.Math.Between(90, 170);
+        fruit.setVelocityY(velocityY);
+        fruit.setVelocityX(velocityX);
+    }
+    const setEventListeners = fruit => {
+       
+    }
+    const createFruit = () => { //TODO: мабуть спрайти потрібно видаляти!
+        const x = getRandomX();
+        const y = innerHeight;
+        const name =  getRandomFruit();
+        const fruit = this.physics.add.sprite(x, y, name);
+        fruit.setSize(...fruitSize).setDisplaySize(...fruitSize).setName(name);
+        setVelocity(x, fruit);
+        setEventListeners(fruit);
+    }
+    setInterval(createFruit, 800)
 }
 
 function preload ()
@@ -42,13 +56,14 @@ function preload ()
     this.load.image('background', './images/background.png');
     this.load.image('pineapple', './images/pineapple.png');
     this.load.image('watermelon', './images/watermelon.png');
-    this.load.image('banana', './images/banana.png'); //TODO: banana
+    this.load.image('banana', './images/banana.png');
+    this.load.image('apple', './images/apple.png'); 
 }
 
 function create ()
 {
     this.add.tileSprite(centerX, centerY, game.width, game.height, 'background');
-    createFruits.call(this)
+    startFruitGenerator.call(this);
 }
 
 function update ()
