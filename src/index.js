@@ -44,9 +44,12 @@ function startFruitGenerator() {
     fruit.setVelocityY(velocityY);
     fruit.setVelocityX(velocityX);
   };
-  const setEventListeners = fruit => {};
+  const setEventListeners = fruit => {
+    fruit.on("pointerdown", () => {
+      fruit.destroy();
+    });
+  };
   const createFruit = () => {
-    //TODO: мабуть спрайти потрібно видаляти і івент лістенери!
     const x = getRandomX();
     const y = innerHeight;
     const { name, points } = getRandomFruit();
@@ -56,7 +59,6 @@ function startFruitGenerator() {
       .setDisplaySize(...fruitSize)
       .setData({ points });
     setVelocity(x, fruit);
-    // setEventListeners(fruit);
   };
   setInterval(createFruit, 800);
 }
