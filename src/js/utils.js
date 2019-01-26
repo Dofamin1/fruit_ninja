@@ -4,7 +4,8 @@ import {
   bombIntervalId,
   fruitIntervalId,
   createFruitGenerator,
-  createBombGenerator
+  createBombGenerator,
+  livesCount
 } from "./index";
 let score = 0;
 let scoreText;
@@ -13,29 +14,22 @@ let lives;
 
 const createLives = () => {
   lives = game.add.group();
-  const livesCount = 3;
   for (var i = 0; i < livesCount; i++) {
     const ship = lives.create(game.world.width + 90 * i, 60, "heart");
     ship.anchor.setTo(2.5, 0.5);
   }
 };
 const createScore = () => {
-  //TODO: not score actualy, the score text
   scoreText = game.add.text(16, 16, "Score: 0", {
     fontSize: "32px",
     fill: "#fff"
   });
 };
 const createStateText = () => {
-  stateText = game.add.text(
-    350,
-    200,
-    "\t\t\tGAME OVER \n Click here to restart",
-    {
-      font: "84px Arial",
-      fill: "#fff"
-    }
-  );
+  stateText = game.add.text(350, 200, "GAME OVER \n  Click  here ", {
+    font: "84px Arial",
+    fill: "#fff"
+  });
   stateText.inputEnabled = true;
 };
 const addToScore = ({ points }) => {
@@ -54,7 +48,7 @@ const gameOver = () => {
   clearInterval(bombIntervalId);
   clearInterval(fruitIntervalId);
   game.world.children.forEach(obj => {
-    obj.data && Object.keys(obj.data).length && obj.kill();
+    obj.type === 0 && obj.kill();
   });
   createStateText();
   stateText.visible = true;
@@ -90,6 +84,5 @@ export {
   setEventListeners,
   getRandomFruit,
   getRandomStartPoint,
-  setVelocity,
-  createStateText
+  setVelocity
 };

@@ -6,12 +6,12 @@ import {
   setEventListeners,
   getRandomFruit,
   setVelocity,
-  getRandomStartPoint,
-  createStateText
+  getRandomStartPoint
 } from "./utils";
 
 const innerWidth = window.innerWidth;
 const innerHeight = window.innerHeight;
+const livesCount = 3;
 const fruitSize = [200, 200];
 const gravity = 300;
 const fruitInterval = 800;
@@ -77,7 +77,6 @@ function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
   game.add.tileSprite(0, 0, game.width, game.height, "background");
   createScore();
-  // createStateText();
   createLives();
   createFruitGenerator();
   createBombGenerator();
@@ -89,5 +88,6 @@ export {
   bombIntervalId,
   fruitIntervalId,
   createFruitGenerator,
-  createBombGenerator
+  createBombGenerator,
+  livesCount
 };
