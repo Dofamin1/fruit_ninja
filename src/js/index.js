@@ -13,7 +13,8 @@ const innerWidth = window.innerWidth;
 const innerHeight = window.innerHeight;
 const fruitSize = [200, 200];
 const gravity = 300;
-const timeInterval = 800;
+const fruitInterval = 800;
+const bombInterval = 4000;
 
 var game = new Phaser.Game(
   innerWidth,
@@ -42,7 +43,21 @@ const createFruitGenerator = () => {
     setEventListeners(fruit);
     setVelocity(x, fruit);
   };
-  setInterval(createFruit, timeInterval);
+  setInterval(createFruit, fruitInterval);
+};
+const createBombGenerator = () => {
+  const createBomb = () => {
+    const x = getRandomStartPoint();
+    const y = innerHeight;
+    const bomb = game.add.sprite(x, y, "bomb");
+    game.physics.enable(bomb, Phaser.Physics.ARCADE);
+    bomb.body.gravity.y = gravity;
+    bomb.inputEnabled = true;
+    bomb.data.bomb = true;
+    setEventListeners(bomb);
+    setVelocity(x, bomb);
+  };
+  setInterval(createBomb, bombInterval);
 };
 
 function preload() {
@@ -52,6 +67,7 @@ function preload() {
   game.load.image("banana", "./images/banana.png");
   game.load.image("apple", "./images/apple.png");
   game.load.image("heart", "./images/heart.png");
+  game.load.image("bomb", "./images/bomb.png");
 }
 
 function create() {
@@ -60,6 +76,7 @@ function create() {
   createScore();
   createLives();
   createFruitGenerator();
+  createBombGenerator();
 }
 
 function update() {}
