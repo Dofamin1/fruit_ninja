@@ -6,7 +6,8 @@ import {
   setEventListeners,
   getRandomFruit,
   setVelocity,
-  getRandomStartPoint
+  getRandomStartPoint,
+  createStateText
 } from "./utils";
 
 const innerWidth = window.innerWidth;
@@ -15,6 +16,8 @@ const fruitSize = [200, 200];
 const gravity = 300;
 const fruitInterval = 800;
 const bombInterval = 4000;
+let fruitIntervalId;
+let bombIntervalId;
 
 var game = new Phaser.Game(
   innerWidth,
@@ -43,7 +46,7 @@ const createFruitGenerator = () => {
     setEventListeners(fruit);
     setVelocity(x, fruit);
   };
-  setInterval(createFruit, fruitInterval);
+  fruitIntervalId = setInterval(createFruit, fruitInterval);
 };
 const createBombGenerator = () => {
   const createBomb = () => {
@@ -57,7 +60,7 @@ const createBombGenerator = () => {
     setEventListeners(bomb);
     setVelocity(x, bomb);
   };
-  setInterval(createBomb, bombInterval);
+  bombIntervalId = setInterval(createBomb, bombInterval);
 };
 
 function preload() {
@@ -74,10 +77,17 @@ function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
   game.add.tileSprite(0, 0, game.width, game.height, "background");
   createScore();
+  // createStateText();
   createLives();
   createFruitGenerator();
   createBombGenerator();
 }
 
 function update() {}
-export { game };
+export {
+  game,
+  bombIntervalId,
+  fruitIntervalId,
+  createFruitGenerator,
+  createBombGenerator
+};

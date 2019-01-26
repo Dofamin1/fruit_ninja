@@ -1,7 +1,14 @@
 import data from "./data";
-import { game } from "./index";
+import {
+  game,
+  bombIntervalId,
+  fruitIntervalId,
+  createFruitGenerator,
+  createBombGenerator
+} from "./index";
 let score = 0;
 let scoreText;
+let stateText;
 let lives;
 
 const createLives = () => {
@@ -12,22 +19,46 @@ const createLives = () => {
     ship.anchor.setTo(2.5, 0.5);
   }
 };
-const restartGame = () => {
-  lives.callAll("revive");
-  scoreText.setText("Score: 0");
-};
 const createScore = () => {
+  //TODO: not score actualy, the score text
   scoreText = game.add.text(16, 16, "Score: 0", {
     fontSize: "32px",
     fill: "#fff"
   });
 };
+const createStateText = () => {
+  stateText = game.add.text(
+    350,
+    200,
+    "\t\t\tGAME OVER \n Click here to restart",
+    {
+      font: "84px Arial",
+      fill: "#fff"
+    }
+  );
+  stateText.inputEnabled = true;
+};
 const addToScore = ({ points }) => {
   score = score + points * 10;
   scoreText.setText("Score: " + score);
 };
+const restartGame = () => {
+  stateText.visible = false;
+  createFruitGenerator();
+  createBombGenerator();
+  lives.callAll("revive");
+  score = 0;
+  scoreText.setText("Score: 0");
+};
 const gameOver = () => {
-  game.input.onTap.addOnce(restartGame);
+  clearInterval(bombIntervalId);
+  clearInterval(fruitIntervalId);
+  game.world.children.forEach(obj => {
+    obj.data && Object.keys(obj.data).length && obj.kill();
+  });
+  createStateText();
+  stateText.visible = true;
+  stateText.events.onInputDown.add(restartGame);
 };
 const subtractLive = () => {
   const live = lives.getFirstAlive();
@@ -59,5 +90,6 @@ export {
   setEventListeners,
   getRandomFruit,
   getRandomStartPoint,
-  setVelocity
+  setVelocity,
+  createStateText
 };
