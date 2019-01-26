@@ -1,4 +1,5 @@
 //TODO: package.json
+// require("./phaser.js");
 require("phaser");
 const data = [
   { name: "pineapple", points: 3 },
@@ -35,7 +36,7 @@ const game = new Phaser.Game(config);
 
 function createFruitGenerator(scoreText) {
   const addToScore = ({ points }) => {
-    score = score + points;
+    score = score + points * 10;
     scoreText.setText("Score: " + score);
   };
   const setEventListeners = fruit => {
@@ -77,13 +78,19 @@ function preload() {
   this.load.image("watermelon", "./images/watermelon.png");
   this.load.image("banana", "./images/banana.png");
   this.load.image("apple", "./images/apple.png");
+  this.load.image("heart", "./images/heart.png");
 }
 
 function create() {
   this.add.tileSprite(centerX, centerY, game.width, game.height, "background");
-  scoreText = this.add.text(16, 16, "score: 0", {
+  const scoreText = this.add.text(16, 16, "Score: 0", {
     fontSize: "32px",
     fill: "#fff"
+  });
+  const lives = this.physics.add.staticGroup({
+    key: "heart",
+    repeat: 2,
+    setXY: { x: innerWidth - 280, y: 50, stepX: 90 }
   });
   createFruitGenerator.call(this, scoreText);
 }
