@@ -56,7 +56,8 @@ const gameOver = () => {
 };
 const subtractLive = () => {
   const live = lives.getFirstAlive();
-  (live && live.kill()) || gameOver();
+  live && live.kill();
+  lives.countLiving() < 1 && gameOver();
 };
 const setEventListeners = gameObj => {
   const isBomb = gameObj.data.bomb;
