@@ -10,31 +10,24 @@ import {
 } from "./utils";
 
 const innerWidth = window.innerWidth;
-const innerHeight = window.innerHeight;
 const livesCount = 3;
 const fruitSize = [200, 200];
-const gravity = 300;
+const gravity = 450;
 const fruitInterval = 800;
-const bombInterval = 4000;
+const bombInterval = 3000;
 let fruitIntervalId;
 let bombIntervalId;
 
-var game = new Phaser.Game(
-  innerWidth,
-  innerHeight,
-  Phaser.AUTO,
-  "fruit-ninja",
-  {
-    preload: preload,
-    create: create,
-    update: update
-  }
-);
+var game = new Phaser.Game(innerWidth, 600, Phaser.AUTO, "game", {
+  preload: preload,
+  create: create,
+  update: update
+});
 
 const createFruitGenerator = () => {
   const createFruit = () => {
     const x = getRandomStartPoint();
-    const y = innerHeight;
+    const y = game.height;
     const { name, points } = getRandomFruit();
     const fruit = game.add.sprite(x, y, name);
     game.physics.enable(fruit, Phaser.Physics.ARCADE);
@@ -51,7 +44,7 @@ const createFruitGenerator = () => {
 const createBombGenerator = () => {
   const createBomb = () => {
     const x = getRandomStartPoint();
-    const y = innerHeight;
+    const y = game.height;
     const bomb = game.add.sprite(x, y, "bomb");
     game.physics.enable(bomb, Phaser.Physics.ARCADE);
     bomb.body.gravity.y = gravity;
@@ -89,5 +82,6 @@ export {
   fruitIntervalId,
   createFruitGenerator,
   createBombGenerator,
-  livesCount
+  livesCount,
+  innerWidth
 };

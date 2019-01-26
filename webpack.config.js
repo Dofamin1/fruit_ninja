@@ -1,10 +1,7 @@
 const path = require("path");
-const argv = require("yargs").argv;
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-const isDevelopment = argv.mode === "development";
 const distPath = path.join(__dirname, "/public");
 
 const config = {
@@ -29,18 +26,10 @@ const config = {
             loader: "babel-loader"
           }
         ]
-      },
-      {
-        test: /\.css$/,
-        exclude: /node_modules/,
-        use: [isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader]
       }
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: "index.css"
-    }),
     new HtmlWebpackPlugin({
       template: "./src/index.html"
     }),

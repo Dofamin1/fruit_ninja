@@ -26,10 +26,15 @@ const createScore = () => {
   });
 };
 const createStateText = () => {
-  stateText = game.add.text(350, 200, "GAME OVER \n  Click  here ", {
-    font: "84px Arial",
-    fill: "#fff"
-  });
+  stateText = game.add.text(
+    350,
+    200,
+    `GAME OVER \n\t\t\t score:${score} \n\t  Click  here `,
+    {
+      font: "84px Arial",
+      fill: "#fff"
+    }
+  );
   stateText.inputEnabled = true;
 };
 const addToScore = ({ points }) => {
@@ -70,15 +75,16 @@ const setEventListeners = gameObj => {
   });
 };
 const setVelocity = (startPointX, fruit) => {
-  const velocityY = game.math.between(-400, -800);
+  const velocityY = game.math.between(-500, -740);
   const velocityX =
-    startPointX > innerWidth / 2
+    startPointX > game.width / 2
       ? game.math.between(-90, -170)
       : game.math.between(90, 170);
   fruit.body.velocity.setTo(velocityX, velocityY);
 };
 const getRandomFruit = () => data[game.math.between(0, 3)];
-const getRandomStartPoint = () => game.math.between(0, innerWidth);
+const getRandomStartPoint = () => game.math.between(0, game.width - 100);
+
 export {
   createLives,
   createScore,
