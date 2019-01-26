@@ -1,5 +1,3 @@
-//TODO: package.json
-
 import {
   createLives,
   createScore,
@@ -18,7 +16,7 @@ const bombInterval = 3000;
 let fruitIntervalId;
 let bombIntervalId;
 
-var game = new Phaser.Game(innerWidth, 600, Phaser.AUTO, "game", {
+const game = new Phaser.Game(innerWidth, 600, Phaser.AUTO, "", {
   preload: preload,
   create: create,
   update: update
