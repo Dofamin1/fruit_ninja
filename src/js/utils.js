@@ -9,75 +9,74 @@ import {
 } from "./index";
 let score = 0;
 let scoreText;
-let stateText;
+let failText;
 let lives;
 
 const createLives = () => {
   lives = game.add.group();
-  for (var i = 0; i < livesCount; i++) {
+  for (let i = 0; i < livesCount; i++) {
     const ship = lives.create(game.world.width + 90 * i, 60, "heart");
     ship.anchor.setTo(2.5, 0.5);
   }
 };
-const createScore = () => {
+const createScoreText = () => {
   scoreText = game.add.text(16, 16, "Score: 0", {
     fontSize: "32px",
     fill: "#fff"
   });
 };
-const createStateText = () => {
-  stateText = game.add.text(
-    350,
-    200,
-    `GAME OVER \n\t\t\t score:${score} \n\t  Click  here `,
+const createFailText = () => {
+  failText = game.add.text(
+    game.world.centerX,
+    game.world.centerY,
+    `GAME OVER \n\t\t\t score:${score} \n\t Click  here `,
     {
       font: "84px Arial",
       fill: "#fff"
     }
   );
-  stateText.inputEnabled = true;
+  failText.anchor.setTo(0.5, 0.5);
+  failText.inputEnabled = true;
+  failText.visible = true;
+  failText.events.onInputDown.add(restartGame);
 };
 const addToScore = ({ points }) => {
-  score = score + points * 10;
+  score += points * 10;
   scoreText.setText("Score: " + score);
 };
 const restartGame = () => {
-  stateText.visible = false;
+  failText.visible = false;
   createFruitGenerator();
   createBombGenerator();
   lives.callAll("revive");
   score = 0;
   scoreText.setText("Score: 0");
 };
-const gameOver = () => {
+const finishGame = () => {
   clearInterval(bombIntervalId);
   clearInterval(fruitIntervalId);
   game.world.children.forEach(obj => {
     obj.type === 0 && obj.kill();
   });
-  createStateText();
-  stateText.visible = true;
-  stateText.events.onInputDown.add(restartGame);
+  createFailText();
 };
 const subtractLive = () => {
   const live = lives.getFirstAlive();
   live && live.kill();
-  lives.countLiving() < 1 && gameOver();
+  lives.countLiving() < 1 && finishGame();
 };
 const setEventListeners = gameObj => {
   const isBomb = gameObj.data.bomb;
   gameObj.events.onInputDown.add(() => {
-    isBomb ? gameOver() : addToScore(gameObj.data);
+    isBomb ? finishGame() : addToScore(gameObj.data);
     gameObj.destroy();
   });
-  gameObj.events.onOutOfBounds.add(() => {
-    !isBomb && subtractLive();
-  });
+  gameObj.events.onOutOfBounds.add(subtractLive);
 };
 const setVelocity = (startPointX, fruit) => {
   const velocityY = game.math.between(-500, -740);
   const velocityX =
-    startPointX > game.width / 2
+    startPointX > game.world.centerX
       ? game.math.between(-90, -170)
       : game.math.between(90, 170);
   fruit.body.velocity.setTo(velocityX, velocityY);
@@ -87,7 +86,7 @@ const getRandomStartPoint = () => game.math.between(0, game.width - 100);
 
 export {
   createLives,
-  createScore,
+  createScoreText,
   setEventListeners,
   getRandomFruit,
   getRandomStartPoint,

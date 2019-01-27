@@ -1,6 +1,6 @@
 import {
   createLives,
-  createScore,
+  createScoreText,
   setEventListeners,
   getRandomFruit,
   setVelocity,
@@ -9,7 +9,7 @@ import {
 
 const innerWidth = window.innerWidth;
 const livesCount = 3;
-const fruitSize = [200, 200];
+const gameObjSize = [200, 200];
 const gravity = 450;
 const fruitInterval = 800;
 const bombInterval = 3000;
@@ -21,6 +21,15 @@ const game = new Phaser.Game(innerWidth, 600, Phaser.AUTO, "", {
   create: create,
   update: update
 });
+const configureGameObj = ({ gameObj, startPointX }) => {
+  game.physics.enable(gameObj, Phaser.Physics.ARCADE);
+  gameObj.body.gravity.y = gravity;
+  gameObj.inputEnabled = true;
+  !gameObj.data.bomb && (gameObj.checkWorldBounds = true);
+  [gameObj.width, gameObj.height] = gameObjSize;
+  setEventListeners(gameObj);
+  setVelocity(startPointX, gameObj);
+};
 
 const createFruitGenerator = () => {
   const createFruit = () => {
@@ -28,14 +37,8 @@ const createFruitGenerator = () => {
     const y = game.height;
     const { name, points } = getRandomFruit();
     const fruit = game.add.sprite(x, y, name);
-    game.physics.enable(fruit, Phaser.Physics.ARCADE);
-    fruit.body.gravity.y = gravity;
-    fruit.inputEnabled = true;
-    fruit.checkWorldBounds = true;
-    [fruit.width, fruit.height] = fruitSize;
     fruit.data.points = points;
-    setEventListeners(fruit);
-    setVelocity(x, fruit);
+    configureGameObj({ gameObj: fruit, startPointX: x });
   };
   fruitIntervalId = setInterval(createFruit, fruitInterval);
 };
@@ -44,12 +47,8 @@ const createBombGenerator = () => {
     const x = getRandomStartPoint();
     const y = game.height;
     const bomb = game.add.sprite(x, y, "bomb");
-    game.physics.enable(bomb, Phaser.Physics.ARCADE);
-    bomb.body.gravity.y = gravity;
-    bomb.inputEnabled = true;
     bomb.data.bomb = true;
-    setEventListeners(bomb);
-    setVelocity(x, bomb);
+    configureGameObj({ gameObj: bomb, startPointX: x });
   };
   bombIntervalId = setInterval(createBomb, bombInterval);
 };
@@ -67,7 +66,7 @@ function preload() {
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
   game.add.tileSprite(0, 0, game.width, game.height, "background");
-  createScore();
+  createScoreText();
   createLives();
   createFruitGenerator();
   createBombGenerator();
@@ -80,6 +79,5 @@ export {
   fruitIntervalId,
   createFruitGenerator,
   createBombGenerator,
-  livesCount,
-  innerWidth
+  livesCount
 };
