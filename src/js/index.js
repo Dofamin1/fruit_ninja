@@ -54,13 +54,9 @@ const createBombGenerator = () => {
 };
 
 function preload() {
-  game.load.image("background", "./images/background.png");
-  game.load.image("pineapple", "./images/pineapple.png");
-  game.load.image("watermelon", "./images/watermelon.png");
-  game.load.image("banana", "./images/banana.png");
-  game.load.image("apple", "./images/apple.png");
-  game.load.image("heart", "./images/heart.png");
-  game.load.image("bomb", "./images/bomb.png");
+  const images = ["background", "pineapple", "watermelon", "banana", "apple", "heart", "bomb" ]
+  images.forEach(img => game.load.image(img, `./images/${img}.png`));
+ 
 }
 
 function create() {
